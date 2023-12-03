@@ -1,4 +1,4 @@
-use days::{day1::Day1, day2::Day2, Day};
+use days::{day1::Day1, day2::Day2, day3::Day3, Day};
 
 pub mod days;
 
@@ -8,12 +8,14 @@ fn main() {
             let days = vec![
                 Box::new(Day1::new(days::get_day_input("day1_test"))) as Box<dyn Day>,
                 Box::new(Day2::new(days::get_day_input("day2_test"))) as Box<dyn Day>,
+                Box::new(Day3::new(days::get_day_input("day3_test"))) as Box<dyn Day>,
             ];
         }
         else {
             let days = vec![
                 Box::new(Day1::new(days::get_day_input("day1"))) as Box<dyn Day>,
                 Box::new(Day2::new(days::get_day_input("day2"))) as Box<dyn Day>,
+                Box::new(Day3::new(days::get_day_input("day3"))) as Box<dyn Day>,
             ];
         }
     }
