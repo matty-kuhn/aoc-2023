@@ -40,7 +40,7 @@ impl Day1 {
             let first_num = loop {
                 let char = line_chars.next();
                 let Some(char) = char else { break None };
-                if char.is_digit(10) {
+                if char.is_ascii_digit() {
                     break char.to_digit(10);
                 }
             };
@@ -52,7 +52,7 @@ impl Day1 {
             let last_num = loop {
                 let char = line_chars.next_back();
                 let Some(char) = char else { break None };
-                if char.is_digit(10) {
+                if char.is_ascii_digit() {
                     break char.to_digit(10);
                 }
             };

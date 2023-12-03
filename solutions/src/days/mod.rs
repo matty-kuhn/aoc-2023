@@ -10,9 +10,8 @@ pub trait Day {
 }
 
 pub fn get_day_input(day: &str) -> String {
-    let input = fs::read_to_string(format!("inputs/{}.txt", day))
-        .expect("Something went wrong reading the file");
-    input
+    fs::read_to_string(format!("inputs/{}.txt", day))
+        .expect("Something went wrong reading the file")
 }
 
 fn get_lines(input: &str) -> Vec<&str> {

@@ -32,7 +32,7 @@ impl Day3 {
         points_to_check
     }
 
-    fn find_all_nums(lines: &Vec<&str>) -> NumsToIndicies {
+    fn find_all_nums(lines: &[&str]) -> NumsToIndicies {
         let mut nums_to_indicies: NumsToIndicies = HashMap::new();
         let mut curr_num = String::new();
         let mut curr_check = PointsToCheck::new();
@@ -42,13 +42,13 @@ impl Day3 {
             for (col_idx, char) in line.chars().enumerate() {
                 // if the char is a digit, add it to the current number
                 // also add the indicies to check for this number
-                if char.is_digit(10) {
+                if char.is_ascii_digit() {
                     curr_num.push(char);
                     curr_check = curr_check.union(Self::get_points_to_check(row_idx, col_idx));
                 } else {
                     // if the char is not a digit, we've reached the end of the number
                     // so add the number and indicies to check to the hashmap
-                    if curr_num.len() > 0 {
+                    if !curr_num.is_empty() {
                         let num = curr_num.parse::<usize>().unwrap();
                         nums_to_indicies.insert(((row_idx, col_idx), num), curr_check);
                     }
@@ -86,7 +86,7 @@ impl Day for Day3 {
                     .chars()
                     .nth(*col_idx_to_check)
                     .unwrap();
-                if char_to_check != '.' && !char_to_check.is_digit(10) {
+                if char_to_check != '.' && !char_to_check.is_ascii_digit() {
                     touching = true;
                     break;
                 }

@@ -115,7 +115,7 @@ impl Game {
         let id = parts
             .next()
             .unwrap()
-            .split(" ")
+            .split(' ')
             .nth(1)
             .unwrap()
             .parse::<u32>()
@@ -129,7 +129,7 @@ impl Game {
             let inner_parts = part.split(", ");
             // for each color in the round
             for curr in inner_parts {
-                let mut curr = curr.split(" ");
+                let mut curr = curr.split(' ');
                 let num = curr.next().unwrap().parse::<u32>().unwrap();
                 let color = curr.next().unwrap();
                 match color {
