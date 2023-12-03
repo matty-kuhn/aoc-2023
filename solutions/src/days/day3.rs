@@ -77,10 +77,15 @@ impl Day for Day3 {
             for point in points_to_check {
                 let (row_idx_to_check, col_idx_to_check) = point;
                 //check that the point is in bounds
-                if *row_idx_to_check >= lines.len() || *col_idx_to_check >= lines[*row_idx_to_check].len() {
+                if *row_idx_to_check >= lines.len()
+                    || *col_idx_to_check >= lines[*row_idx_to_check].len()
+                {
                     continue;
                 }
-                let char_to_check = lines[*row_idx_to_check].chars().nth(*col_idx_to_check).unwrap();
+                let char_to_check = lines[*row_idx_to_check]
+                    .chars()
+                    .nth(*col_idx_to_check)
+                    .unwrap();
                 if char_to_check != '.' && !char_to_check.is_digit(10) {
                     touching = true;
                     break;
@@ -94,6 +99,48 @@ impl Day for Day3 {
     }
 
     fn part2(&self) -> String {
-        format!("todo")
+        let lines = get_lines(&self.input);
+        let nums_to_indicies = Self::find_all_nums(&lines);
+        // a hashmap of all gears, with a count of how many nums they touch, and their ratio
+        let mut gears: HashMap<Point, (usize, usize)> = HashMap::new();
+        for entry in nums_to_indicies.iter() {
+            let ((row_idx, col_idx), num) = entry.0;
+            let points_to_check = entry.1;
+            for point in points_to_check {
+                let (row_idx_to_check, col_idx_to_check) = point;
+                //check that the point is in bounds
+                if *row_idx_to_check >= lines.len()
+                    || *col_idx_to_check >= lines[*row_idx_to_check].len()
+                {
+                    continue;
+                }
+                let char_to_check = lines[*row_idx_to_check]
+                    .chars()
+                    .nth(*col_idx_to_check)
+                    .unwrap();
+                if char_to_check == '*' {
+                    let gear = gears.entry(*point).or_insert((0, 0));
+                    if gear.0 == 0 {
+                        gear.1 = *num;
+                    } else if gear.0 == 1 {
+                        gear.1 *= *num;
+                    } else {
+                        // set the gear power to 0, since it touches more than 2 nums
+                        gear.1 *= 0;
+                    }
+                    gear.0 += 1;
+                }
+            }
+        }
+        // sum the gear powers, but only if they touch 2 nums
+        let sum = gears.iter().fold(0, |acc, entry| {
+            let (_, (count, power)) = entry;
+            if *count == 2 {
+                acc + *power
+            } else {
+                acc
+            }
+        });
+        format!("{sum}")
     }
 }
