@@ -89,8 +89,6 @@ impl Day for Day4 {
 #[derive(Debug, Clone)]
 struct Card {
     id: usize,
-    winning_numbers: HashSet<usize>,
-    card_numbers: HashSet<usize>,
     point_value: usize,
     winners: HashSet<usize>,
 }
@@ -109,6 +107,9 @@ impl Card {
 
     // helper function to calculate the point value of a card
     fn calculate_point_value(winners: &HashSet<usize>) -> usize {
+        if winners.is_empty() {
+            return 0;
+        }
         2usize.pow((winners.len() - 1) as u32)
     }
 
@@ -118,7 +119,7 @@ impl Card {
 
     /// point value is determined by 2^(x-1) where x is the number of winning numbers on the card
     fn get_point_value(&self) -> usize {
-        Card::calculate_point_value(&self.winners)
+        self.point_value
     }
 }
 
@@ -157,8 +158,6 @@ impl FromStr for Card {
         let point_value = Card::calculate_point_value(&winners);
         Ok(Card {
             id: card_id,
-            winning_numbers,
-            card_numbers,
             winners,
             point_value,
         })

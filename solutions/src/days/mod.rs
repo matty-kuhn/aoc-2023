@@ -21,7 +21,7 @@ fn get_lines(input: &str) -> Vec<&str> {
     input.lines().collect::<Vec<&str>>()
 }
 
-pub fn day_builder(day: usize, input_name: &str) -> Box<dyn Day> {
+pub fn day_builder(day: i8, input_name: &str) -> Box<dyn Day> {
     match day {
         1 => Box::new(Day1::new(get_day_input(input_name))) as Box<dyn Day>,
         2 => Box::new(Day2::new(get_day_input(input_name))) as Box<dyn Day>,
