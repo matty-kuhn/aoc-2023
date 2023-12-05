@@ -1,27 +1,44 @@
-use days::{day1::Day1, day2::Day2, day3::Day3, day4::Day4, Day};
+use std::collections::HashMap;
 
+use clap::Parser;
+use days::{day_builder, Day};
+
+const CURRENT_DAY: usize = 4;
 pub mod days;
 
+#[derive(Parser, Debug)]
+struct Cli {
+    /// The day to run
+    day: Option<String>,
+}
+
 fn main() {
+    let args = Cli::parse();
+    let day = args.day.unwrap_or("all".to_string());
+    let mut days: HashMap<usize, Box<dyn Day>> = HashMap::new();
     cfg_if::cfg_if! {
         if #[cfg(debug_assertions)] {
-            let days = vec![
-                Box::new(Day1::new(days::get_day_input("day1_test"))) as Box<dyn Day>,
-                Box::new(Day2::new(days::get_day_input("day2_test"))) as Box<dyn Day>,
-                Box::new(Day3::new(days::get_day_input("day3_test"))) as Box<dyn Day>,
-                Box::new(Day4::new(days::get_day_input("day4_test"))) as Box<dyn Day>,
-            ];
+            if day == "all" {
+                for day_num in 1..=CURRENT_DAY {
+                    days.insert(day_num, day_builder(day_num, &format!("day{}_test", day_num)));
+                }
+            } else {
+                let day_num = day.parse::<usize>().unwrap();
+                days.insert(day_num, day_builder(day_num, &format!("day{}_test", day_num)));
+            }
         }
         else {
-            let days = vec![
-                Box::new(Day1::new(days::get_day_input("day1"))) as Box<dyn Day>,
-                Box::new(Day2::new(days::get_day_input("day2"))) as Box<dyn Day>,
-                Box::new(Day3::new(days::get_day_input("day3"))) as Box<dyn Day>,
-                Box::new(Day4::new(days::get_day_input("day4"))) as Box<dyn Day>,
-            ];
+            if day == "all" {
+                for day_num in 1..=CURRENT_DAY {
+                    days.insert(day_num, day_builder(day_num, &format!("day{}", day_num)));
+                }
+            } else {
+                let day_num = day.parse::<usize>().unwrap();
+                days.insert(day_num, day_builder(day_num, &format!("day{}", day_num)));
+            }
         }
     }
-    for (idx, day) in days.iter().enumerate() {
+    for (idx, day) in days {
         println!("Day {}", idx + 1);
         println!("\tPart 1: {}", day.part1());
         println!("\tPart 2: {}", day.part2());
