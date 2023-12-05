@@ -83,6 +83,17 @@ impl Day for Day4 {
             }
         }
         format!("{counter}")
+        // Charles mogging me w his superior solution
+        // let mut card_queue = self.get_card_queue();
+        // let mut counter = vec![1; card_map.len()];
+        // for (idx, card) in card_queue.iter().enumerate() {
+        //     let count = card.get_winning_numbers().len();
+        //     for j in idx + 1..idx + count + 1 {
+        //         counter[j] += counter[idx];
+        //     }
+        // }
+        // let elapsed = start.elapsed();
+        // format!("{}", counter.iter().sum::<usize>())
     }
 }
 
@@ -100,7 +111,8 @@ impl Card {
         card_numbers: &HashSet<usize>,
     ) -> HashSet<usize> {
         winning_numbers
-            .intersection(card_numbers).copied()
+            .intersection(card_numbers)
+            .copied()
             .collect::<HashSet<usize>>()
     }
 
