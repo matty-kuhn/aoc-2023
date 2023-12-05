@@ -100,8 +100,7 @@ impl Card {
         card_numbers: &HashSet<usize>,
     ) -> HashSet<usize> {
         winning_numbers
-            .intersection(card_numbers)
-            .map(|n| *n)
+            .intersection(card_numbers).copied()
             .collect::<HashSet<usize>>()
     }
 
@@ -130,11 +129,10 @@ impl FromStr for Card {
         // string format:
         // Card <id>: <number> <number> <number> <number> <number> | <number> <number> <number> <number> <number>
         // the nuumbers before the | are the winning numbers, the rest are the numbers on the card
-        let mut parts = s.split(":");
+        let mut parts = s.split(':');
         let card_id = parts
             .next()
             .unwrap()
-            .trim()
             .split_whitespace()
             .nth(1)
             .unwrap()
@@ -144,7 +142,7 @@ impl FromStr for Card {
             .next()
             .unwrap()
             .trim()
-            .split("|")
+            .split('|')
             .collect::<Vec<&str>>();
         let winning_numbers = numbers[0]
             .split_whitespace()
