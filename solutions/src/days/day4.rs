@@ -92,7 +92,6 @@ impl Day for Day4 {
         //         counter[j] += counter[idx];
         //     }
         // }
-        // let elapsed = start.elapsed();
         // format!("{}", counter.iter().sum::<usize>())
     }
 }
