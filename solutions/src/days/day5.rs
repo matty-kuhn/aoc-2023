@@ -21,7 +21,7 @@ impl Day5 {
         // get seeds from first line
         let seed_line = lines[0];
         let seed_line = seed_line.replace("seeds: ", "");
-        let seed_line = seed_line.trim().split_whitespace().collect::<Vec<&str>>();
+        let seed_line = seed_line.split_whitespace().collect::<Vec<&str>>();
         for seed in seed_line {
             seeds.push(seed.parse::<isize>().unwrap());
         }
@@ -103,7 +103,7 @@ impl FromStr for RangeMap {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         // line format:
         // <dest_start> <source_start> <range_len>
-        let parts = s.split(" ").collect::<Vec<&str>>();
+        let parts = s.split(' ').collect::<Vec<&str>>();
         let dest_start = parts[0].parse::<isize>().unwrap();
         let source_start = parts[1].parse::<isize>().unwrap();
         let range_len = parts[2].parse::<isize>().unwrap();
@@ -121,7 +121,7 @@ impl RangeMap {
     }
 
     /// returns a tuple of changed, unchanged
-    fn apply(&self, input: &Vec<isize>) -> (Vec<isize>, Vec<isize>) {
+    fn apply(&self, input: &[isize]) -> (Vec<isize>, Vec<isize>) {
         let mut changed = Vec::new();
         let mut unchanged = Vec::new();
         for num in input.iter() {
@@ -149,8 +149,8 @@ impl ResourceToResource {
         ResourceToResource { range_maps }
     }
 
-    fn apply(&self, input: &Vec<isize>) -> Vec<isize> {
-        let mut input = input.clone();
+    fn apply(&self, input: &[isize]) -> Vec<isize> {
+        let mut input = input.to_vec();
         let mut output = Vec::new();
         for range_map in self.range_maps.iter() {
             // apply the range map to the input
@@ -225,7 +225,7 @@ impl ResourceMap {
         }
     }
 
-    fn apply(&self, input: &Vec<isize>) -> Vec<isize> {
+    fn apply(&self, input: &[isize]) -> Vec<isize> {
         match self {
             ResourceMap::SeedToSoil(resource_to_resource) => resource_to_resource.apply(input),
             ResourceMap::SoilToFertilizer(resource_to_resource) => {
