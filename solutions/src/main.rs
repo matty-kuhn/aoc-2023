@@ -1,7 +1,8 @@
 use clap::Parser;
 use days::{day_builder, Day};
 
-const CURRENT_DAY: i8 = 4;
+use crate::days::CURRENT_DAY;
+
 pub mod days;
 
 #[derive(Parser, Debug)]
