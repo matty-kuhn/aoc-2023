@@ -15,14 +15,14 @@ impl Day6 {
         let lines = get_lines(&self.input);
         let mut races = Vec::new();
         let times = lines[0]
-            .split(":")
+            .split(':')
             .nth(1)
             .unwrap()
             .split_whitespace()
             .map(|x| x.parse::<f64>().unwrap())
             .collect::<Vec<f64>>();
         let distances = lines[1]
-            .split(":")
+            .split(':')
             .nth(1)
             .unwrap()
             .split_whitespace()
@@ -37,20 +37,18 @@ impl Day6 {
     fn get_big_race(&self) -> Race {
         let lines = get_lines(&self.input);
         let time = lines[0]
-            .split(":")
+            .split(':')
             .nth(1)
             .unwrap()
-            .trim()
             .split_whitespace()
             .collect::<Vec<&str>>()
             .join("")
             .parse::<f64>()
             .unwrap();
         let distance = lines[1]
-            .split(":")
+            .split(':')
             .nth(1)
             .unwrap()
-            .trim()
             .split_whitespace()
             .collect::<Vec<&str>>()
             .join("")
