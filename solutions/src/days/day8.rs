@@ -100,7 +100,7 @@ impl Day for Day8 {
 
     fn part2(&self) -> String {
         let start_time = std::time::Instant::now();
-        let (mut instructions, map) = self.parse_input();
+        let (instructions, map) = self.parse_input();
         let mut a_enders = Vec::new();
         for key in map.keys() {
             if key.ends_with('A') {
