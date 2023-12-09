@@ -1,8 +1,11 @@
 use std::fs;
 
-use self::{day1::Day1, day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6};
+use self::{
+    day1::Day1, day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6, day7::Day7, day8::Day8,
+    day9::Day9,
+};
 
-pub const CURRENT_DAY: i8 = 6;
+pub const CURRENT_DAY: i8 = 9;
 
 pub mod day1;
 pub mod day2;
@@ -10,6 +13,9 @@ pub mod day3;
 pub mod day4;
 pub mod day5;
 pub mod day6;
+pub mod day7;
+pub mod day8;
+pub mod day9;
 
 pub trait Day {
     fn part1(&self) -> String;
@@ -33,6 +39,9 @@ pub fn day_builder(day: i8, input_name: &str) -> Box<dyn Day> {
         4 => Box::new(Day4::new(get_day_input(input_name))) as Box<dyn Day>,
         5 => Box::new(Day5::new(get_day_input(input_name))) as Box<dyn Day>,
         6 => Box::new(Day6::new(get_day_input(input_name))) as Box<dyn Day>,
+        7 => Box::new(Day7::new(get_day_input(input_name))) as Box<dyn Day>,
+        8 => Box::new(Day8::new(get_day_input(input_name))) as Box<dyn Day>,
+        9 => Box::new(Day9::new(get_day_input(input_name))) as Box<dyn Day>,
         _ => panic!("Day {} not implemented yet", day),
     }
 }
