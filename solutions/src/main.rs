@@ -46,8 +46,7 @@ fn main() {
                 _ => panic!("Part {} not implemented yet", part),
             }
             continue;
-        }
-        else {
+        } else {
             println!("\tPart 1: {}", day.part1());
             println!("\tPart 2: {}", day.part2());
         }

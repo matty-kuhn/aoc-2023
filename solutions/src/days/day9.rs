@@ -62,22 +62,26 @@ impl Day9 {
 
 impl Day for Day9 {
     fn part1(&self) -> String {
+        let start_time = std::time::Instant::now();
         let sequences = self.get_sequences();
         let mut next_nums = Vec::new();
         for sequence in sequences {
             let next_num = Self::get_next_num(&sequence, true);
             next_nums.push(next_num);
         }
+        println!("part 1 took {:?}", start_time.elapsed());
         format!("{}", next_nums.iter().sum::<i64>())
     }
 
     fn part2(&self) -> String {
+        let start_time = std::time::Instant::now();
         let sequences = self.get_sequences();
         let mut next_nums = Vec::new();
         for sequence in sequences {
             let next_num = Self::get_next_num(&sequence, false);
             next_nums.push(next_num);
         }
+        println!("part 2 took {:?}", start_time.elapsed());
         format!("{}", next_nums.iter().sum::<i64>())
     }
 }
