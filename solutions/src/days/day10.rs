@@ -101,7 +101,7 @@ impl Day10 {
         for check in checks {
             if let Some(point) = map.get(&check) {
                 if Point::Start.check_next_point_valid(point, Direction::from((*start, check))) {
-                    return (check, point.clone());
+                    return (check, *point);
                 }
             }
         }
@@ -111,7 +111,7 @@ impl Day10 {
     /// returns the total number of steps taken, and a map of the number of steps taken to each point
     fn traverse_path(start: &Coord, map: &Map) -> (i32, HashMap<Coord, i32>) {
         let mut steps = 0;
-        let (mut current_coord, mut current_point) = Self::find_start_direction(&start, &map);
+        let (mut current_coord, mut current_point) = Self::find_start_direction(start, map);
         let mut visited = HashMap::new();
         visited.insert(*start, steps);
         loop {
@@ -129,9 +129,9 @@ impl Day10 {
                             .check_next_point_valid(point, Direction::from((current_coord, check)))
                     {
                         steps += 1;
-                        visited.insert(current_coord.clone(), steps);
+                        visited.insert(current_coord, steps);
                         current_coord = check;
-                        current_point = point.clone();
+                        current_point = *point;
                         found = true;
                         break;
                     }
