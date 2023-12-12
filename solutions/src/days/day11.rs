@@ -81,6 +81,7 @@ impl Day11 {
 impl Day for Day11 {
     fn part1(&self) -> String {
         let expansion_amount = 1;
+        let start = std::time::Instant::now();
         let (galaxies, (galaxy_row_counts, galaxy_column_counts)) = self.get_galaxies();
         let galaxies = Self::adjust_rows_and_columns(
             galaxies,
@@ -88,11 +89,14 @@ impl Day for Day11 {
             galaxy_column_counts,
             expansion_amount,
         );
-        format!("{}", Self::distance_between_all_galaxies(galaxies))
+        let distance = Self::distance_between_all_galaxies(galaxies);
+        println!("Part 1 Time: {:?}", start.elapsed());
+        format!("{distance}")
     }
 
     fn part2(&self) -> String {
         let expansion_amount = 999_999;
+        let start = std::time::Instant::now();
         let (galaxies, (galaxy_row_counts, galaxy_column_counts)) = self.get_galaxies();
         let galaxies = Self::adjust_rows_and_columns(
             galaxies,
@@ -100,6 +104,8 @@ impl Day for Day11 {
             galaxy_column_counts,
             expansion_amount,
         );
-        format!("{}", Self::distance_between_all_galaxies(galaxies))
+        let distance = Self::distance_between_all_galaxies(galaxies);
+        println!("Part 2 Time: {:?}", start.elapsed());
+        format!("{distance}")
     }
 }
