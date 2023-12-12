@@ -22,13 +22,10 @@ impl Day11 {
         let mut galaxy_column_counts = vec![0; lines.len()];
         for (y, line) in lines.iter().enumerate() {
             for (x, char) in line.chars().enumerate() {
-                match char {
-                    '#' => {
-                        galaxy_row_counts[y] += 1;
-                        galaxy_column_counts[x] += 1;
-                        galaxies.push((x as i64, y as i64))
-                    }
-                    _ => (),
+                if char == '#' {
+                    galaxy_row_counts[y] += 1;
+                    galaxy_column_counts[x] += 1;
+                    galaxies.push((x as i64, y as i64))
                 }
             }
         }
