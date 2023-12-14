@@ -32,7 +32,7 @@ fn count_solutions(map: String, counts: Vec<i64>, prev_in_group: Option<i64>) ->
         return 0;
     }
     let mut solutions = 0;
-    let next_chars = if map.starts_with("?") {
+    let next_chars = if map.starts_with('?') {
         // want to check for solutions with both '.' and '#'
         vec!['.', '#']
     } else {
@@ -47,16 +47,14 @@ fn count_solutions(map: String, counts: Vec<i64>, prev_in_group: Option<i64>) ->
                 counts.clone(),
                 Some(prev_in_group + 1),
             );
-        } else {
-            if prev_in_group > 0 {
-                if !counts.is_empty() && counts[0] == prev_in_group {
-                    // if we have a '.', we want to close the group if we have one open
-                    solutions += count_solutions(map[1..].to_string(), counts[1..].to_vec(), None);
-                }
-            } else {
-                // not in group, move to next
-                solutions += count_solutions(map[1..].to_string(), counts.clone(), None);
+        } else if prev_in_group > 0 {
+            if !counts.is_empty() && counts[0] == prev_in_group {
+                // if we have a '.', we want to close the group if we have one open
+                solutions += count_solutions(map[1..].to_string(), counts[1..].to_vec(), None);
             }
+        } else {
+            // not in group, move to next
+            solutions += count_solutions(map[1..].to_string(), counts.clone(), None);
         }
     }
 
@@ -70,7 +68,7 @@ impl Day for Day12 {
         let total_solutions = rows
             .iter_mut()
             .map(|row| {
-                row.map.push_str(".");
+                row.map.push('.');
                 count_solutions(row.map.clone(), row.counts.clone(), None)
             })
             .sum::<i64>();
@@ -85,7 +83,7 @@ impl Day for Day12 {
             .iter_mut()
             .map(|row| {
                 *row *= 5;
-                row.map.push_str(".");
+                row.map.push('.');
                 count_solutions(row.map.clone(), row.counts.clone(), None)
             })
             .sum::<i64>();
@@ -128,7 +126,7 @@ impl FromStr for Row {
             counts: split
                 .last()
                 .unwrap()
-                .split(",")
+                .split(',')
                 .map(|s| s.parse::<i64>().unwrap())
                 .collect(),
             map: split[0].to_string(),
