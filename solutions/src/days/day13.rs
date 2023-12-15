@@ -25,7 +25,7 @@ impl Day13 {
         puzzles
     }
 
-    fn palindrome_verify(nums: &Vec<u128>, left: usize, right: usize) -> Option<usize> {
+    fn palindrome_verify(nums: &[u128], left: usize, right: usize) -> Option<usize> {
         let mut palindrome_idx = None;
         let mut left_idx = left;
         let mut right_idx = right;
@@ -37,8 +37,7 @@ impl Day13 {
             right_idx -= 1;
         }
         if left_idx >= right_idx {
-            palindrome_idx =
-                Some(((left_idx as f64 + right_idx as f64) / 2 as f64).floor() as usize);
+            palindrome_idx = Some(((left_idx as f64 + right_idx as f64) / 2_f64).floor() as usize);
         }
         palindrome_idx
     }
@@ -115,10 +114,10 @@ fn transform_num(num: u128, max_idx: usize) -> Vec<u128> {
 fn find_palindrome_mult(nums: Vec<u128>, max_idx: usize) -> Option<usize> {
     // we check a moving line to see if two given items are one off from each other
     for idx in 0..nums.len() - 1 {
-        if fuzzy_match(nums[idx], nums[idx + 1], max_idx) {
-            if palindrome_verify_mult(nums.clone(), idx, max_idx) {
-                return Some(idx);
-            }
+        if fuzzy_match(nums[idx], nums[idx + 1], max_idx)
+            && palindrome_verify_mult(nums.clone(), idx, max_idx)
+        {
+            return Some(idx);
         }
     }
     // so we have the original center line, we now need to search for real mirror center lines with off by one other rows
@@ -149,7 +148,7 @@ fn palindrome_verify_mult(nums: Vec<u128>, idx: usize, max_idx: usize) -> bool {
     loop {
         if left == 0 || right >= nums.len() - 1 {
             // we are at the ends, so if they equal we gucci
-            if right <= nums.len() - 1 {
+            if right < nums.len() {
                 break nums[left] == nums[right];
             }
             break false;
@@ -176,7 +175,7 @@ fn palindrome_verify_mult_fuzzy(nums: Vec<u128>, idx: usize, max_idx: usize) -> 
     let mut fuzzy_found = false;
     loop {
         if left == 0 || right >= nums.len() - 1 {
-            if right <= nums.len() - 1 {
+            if right < nums.len() {
                 // we are at the ends, so if they equal we gucci
                 if fuzzy_match(nums[left], nums[right], max_idx) {
                     if fuzzy_found {
@@ -269,10 +268,10 @@ impl From<Vec<String>> for Puzzle {
     fn from(value: Vec<String>) -> Self {
         let mut cols = Vec::new();
         let mut rows = Vec::new();
-        for y in 0..value.len() {
+        for y in &value {
             let mut row_num = 0;
-            for x in 0..value[y].len() {
-                let c = value[y].chars().nth(x).unwrap();
+            for x in 0..(y.len()) {
+                let c = y.chars().nth(x).unwrap();
                 if c == '#' {
                     row_num += 2u128.pow(x as u32);
                 }
@@ -281,10 +280,10 @@ impl From<Vec<String>> for Puzzle {
         }
         for x in 0..value[0].len() {
             let mut col_num = 0;
-            for y in 0..value.len() {
-                let c = value[y].chars().nth(x).unwrap();
+            for (idx, y) in value.iter().enumerate() {
+                let c = y.chars().nth(x).unwrap();
                 if c == '#' {
-                    col_num += 2u128.pow(y as u32);
+                    col_num += 2u128.pow(idx as u32);
                 }
             }
             cols.push(col_num);
