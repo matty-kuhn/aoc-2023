@@ -248,9 +248,8 @@ impl Day for Day13 {
         let mut nums_left = 0;
         let mut nums_above = 0;
         // for this one, we are going to change each row/col value by one bit to see if we can get a new value
-        for (idx, puzzle) in puzzles.iter().cloned().enumerate() {
+        for puzzle in puzzles {
             let (left, above) = Self::get_puzzle_soln_pt2(puzzle);
-            // println!("finished puzzle {}/{}", idx + 1, puzzles.len());
             nums_left += left;
             nums_above += above;
         }
