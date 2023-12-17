@@ -1,4 +1,4 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::{VecDeque};
 
 use memoize::memoize;
 
@@ -186,11 +186,7 @@ impl Day for Day14 {
         // use this to detect cycles
         let mut hist_vec: Vec<Vec<Vec<char>>> = Vec::new();
         let iters = 1_000_000_000;
-        let mut iter_start = std::time::Instant::now();
-        for i in 0..iters {
-            if i % 1_000_000 == 0 {
-                iter_start = std::time::Instant::now();
-            }
+        for _ in 0..iters {
             ns_cols = do_spin_cycle(ns_cols);
             if let Some(first_idx) = hist_vec.iter().position(|x| *x == ns_cols) {
                 let cycle_len = hist_vec.len() - first_idx;
