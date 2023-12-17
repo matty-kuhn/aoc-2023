@@ -1,4 +1,4 @@
-use std::collections::{VecDeque};
+use std::collections::VecDeque;
 
 use memoize::memoize;
 
@@ -102,11 +102,8 @@ fn get_col_weight_in_place(col: Vec<char>) -> usize {
     let mut weight = 0;
     let col_len = col.len();
     for (idx, rock) in col.iter().enumerate() {
-        match rock {
-            'O' => {
-                weight += Day14::get_spot_load(idx, col_len);
-            }
-            _ => {}
+        if rock == &'O' {
+            weight += Day14::get_spot_load(idx, col_len);
         }
     }
     weight
@@ -191,7 +188,7 @@ impl Day for Day14 {
             if let Some(first_idx) = hist_vec.iter().position(|x| *x == ns_cols) {
                 let cycle_len = hist_vec.len() - first_idx;
                 let cycle_iter = ((iters - first_idx) % cycle_len + first_idx) - 1;
-                ns_cols = hist_vec[cycle_iter as usize].clone();
+                ns_cols = hist_vec[cycle_iter].clone();
                 break;
             } else {
                 hist_vec.push(ns_cols.clone());
