@@ -29,16 +29,8 @@ impl Day15 {
         // lens score = (box # + 1) * index * len
         let mut total_score = 0;
         for (box_num, lenses) in box_map {
-            for (_group, (idx, len)) in lenses {
+            for (idx, len) in lenses.values() {
                 let score = (box_num + 1) * (idx + 1) * len;
-                // println!(
-                //     "{} {} {} {} {}",
-                //     group,
-                //     (box_num + 1),
-                //     (idx + 1),
-                //     len,
-                //     score
-                // );
                 total_score += score;
             }
         }
@@ -51,7 +43,7 @@ impl Day for Day15 {
         let start_time = std::time::Instant::now();
         let sum = self
             .parse_input()
-            .split(",")
+            .split(',')
             .fold(0, |acc, x| acc + Self::score_group(x));
         println!("part 1 time: {:?}", start_time.elapsed());
         format!("{sum}")
@@ -63,9 +55,9 @@ impl Day for Day15 {
         let mut box_map = HashMap::new();
         let binding = self.parse_input();
         for group in binding.split(',') {
-            if group.contains("-") {
+            if group.contains('-') {
                 // take that lens out
-                let group = group.trim_end_matches("-");
+                let group = group.trim_end_matches('-');
                 let entry: &mut HashMap<&str, (usize, usize)> = box_map
                     .entry(Self::score_group(group))
                     .or_insert(HashMap::new());
