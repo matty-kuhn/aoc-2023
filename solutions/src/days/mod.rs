@@ -3,7 +3,7 @@ use std::fs;
 use self::{
     day1::Day1, day10::Day10, day11::Day11, day12::Day12, day13::Day13, day14::Day14, day15::Day15,
     day16::Day16, day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6, day7::Day7,
-    day8::Day8, day9::Day9,
+    day8::Day8, day9::Day9, day17::Day17,
 };
 
 pub const CURRENT_DAY: i8 = 16;
@@ -24,6 +24,7 @@ pub mod day6;
 pub mod day7;
 pub mod day8;
 pub mod day9;
+pub mod day17;
 
 pub trait Day {
     fn part1(&self) -> String;
@@ -57,7 +58,7 @@ pub fn day_builder(day: i8, input_name: &str) -> Box<dyn Day> {
         14 => Box::new(Day14::new(get_day_input(input_name))) as Box<dyn Day>,
         15 => Box::new(Day15::new(get_day_input(input_name))) as Box<dyn Day>,
         16 => Box::new(Day16::new(get_day_input(input_name))) as Box<dyn Day>,
-        // 17 => Box::new(Day17::new(get_day_input(input_name))) as Box<dyn Day>,
+        17 => Box::new(Day17::new(get_day_input(input_name))) as Box<dyn Day>,
         // 18 => Box::new(Day18::new(get_day_input(input_name))) as Box<dyn Day>,
         // 19 => Box::new(Day19::new(get_day_input(input_name))) as Box<dyn Day>,
         // 20 => Box::new(Day20::new(get_day_input(input_name))) as Box<dyn Day>,
