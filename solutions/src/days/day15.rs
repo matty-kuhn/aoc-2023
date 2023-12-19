@@ -69,7 +69,6 @@ impl Day for Day15 {
                         }
                     }
                 }
-
             } else {
                 // add to box map
                 let mut split = group.split('=');
