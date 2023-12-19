@@ -83,7 +83,7 @@ impl Day16 {
         let mut energized_tiles = HashSet::new();
         let mut visited = HashSet::new();
         let mut queue = VecDeque::new();
-        queue.push_back((curr_dir.clone(), (x, y)));
+        queue.push_back((curr_dir, (x, y)));
         energized_tiles.insert((x, y));
         while let Some((dir, square)) = queue.pop_front() {
             if visited.contains(&(dir, square)) {
@@ -122,12 +122,10 @@ impl Day16 {
                         ) {
                             queue.push_back((Direction::Right, next_square));
                         }
-                    } else {
-                        if let Some(next_square) =
-                            Self::get_next_square(x, y, curr_dir, map[0].len() - 1, map.len() - 1)
-                        {
-                            queue.push_back((curr_dir, next_square));
-                        }
+                    } else if let Some(next_square) =
+                        Self::get_next_square(x, y, curr_dir, map[0].len() - 1, map.len() - 1)
+                    {
+                        queue.push_back((curr_dir, next_square));
                     }
                 }
                 '|' => {
@@ -151,12 +149,10 @@ impl Day16 {
                             queue.push_back((Direction::Down, next_square));
                         }
                         // push both onto the queue
-                    } else {
-                        if let Some(next_square) =
-                            Self::get_next_square(x, y, curr_dir, map[0].len() - 1, map.len() - 1)
-                        {
-                            queue.push_back((curr_dir, next_square));
-                        }
+                    } else if let Some(next_square) =
+                        Self::get_next_square(x, y, curr_dir, map[0].len() - 1, map.len() - 1)
+                    {
+                        queue.push_back((curr_dir, next_square));
                     }
                 }
                 '/' => {
@@ -190,16 +186,14 @@ impl Day16 {
                         ) {
                             queue.push_back((Direction::Down, next_square));
                         }
-                    } else {
-                        if let Some(next_square) = Self::get_next_square(
-                            x,
-                            y,
-                            Direction::Up,
-                            map[0].len() - 1,
-                            map.len() - 1,
-                        ) {
-                            queue.push_back((Direction::Up, next_square));
-                        }
+                    } else if let Some(next_square) = Self::get_next_square(
+                        x,
+                        y,
+                        Direction::Up,
+                        map[0].len() - 1,
+                        map.len() - 1,
+                    ) {
+                        queue.push_back((Direction::Up, next_square));
                     }
                 }
                 '\\' => {
@@ -233,16 +227,14 @@ impl Day16 {
                         ) {
                             queue.push_back((Direction::Up, next_square));
                         }
-                    } else {
-                        if let Some(next_square) = Self::get_next_square(
-                            x,
-                            y,
-                            Direction::Down,
-                            map[0].len() - 1,
-                            map.len() - 1,
-                        ) {
-                            queue.push_back((Direction::Down, next_square));
-                        }
+                    } else if let Some(next_square) = Self::get_next_square(
+                        x,
+                        y,
+                        Direction::Down,
+                        map[0].len() - 1,
+                        map.len() - 1,
+                    ) {
+                        queue.push_back((Direction::Down, next_square));
                     }
                 }
                 _ => panic!("Invalid character in map"),
