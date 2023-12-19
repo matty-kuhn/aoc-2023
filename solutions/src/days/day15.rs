@@ -29,7 +29,7 @@ impl Day15 {
         // lens score = (box # + 1) * index * len
         let mut total_score = 0;
         for (box_num, lenses) in box_map {
-            for (group, (idx, len)) in lenses {
+            for (_group, (idx, len)) in lenses {
                 let score = (box_num + 1) * (idx + 1) * len;
                 // println!(
                 //     "{} {} {} {} {}",
