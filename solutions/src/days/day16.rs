@@ -21,7 +21,7 @@ impl Day16 {
     fn visualize_energized(&self, energized_tiles: &HashSet<(usize, usize)>) {
         let map = self.parse_input();
         for (y, row) in map.iter().enumerate() {
-            for (x, col) in row.iter().enumerate() {
+            for (x, _col) in row.iter().enumerate() {
                 if energized_tiles.contains(&(x, y)) {
                     print!("#");
                 } else {
@@ -316,16 +316,4 @@ enum Direction {
     Down,
     Left,
     Right,
-}
-
-impl Direction {
-    fn next_square(&self, square: (usize, usize)) -> (usize, usize) {
-        let (x, y) = square;
-        match self {
-            Direction::Up => (x, y - 1),
-            Direction::Down => (x, y + 1),
-            Direction::Left => (x - 1, y),
-            Direction::Right => (x + 1, y),
-        }
-    }
 }
