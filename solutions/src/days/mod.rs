@@ -1,11 +1,11 @@
 use std::fs;
 
 use self::{
-    day1::Day1, day10::Day10, day11::Day11, day12::Day12, day13::Day13, day14::Day14, day2::Day2,
-    day3::Day3, day4::Day4, day5::Day5, day6::Day6, day7::Day7, day8::Day8, day9::Day9,
+    day1::Day1, day10::Day10, day11::Day11, day12::Day12, day13::Day13, day14::Day14, day15::Day15,
+    day2::Day2, day3::Day3, day4::Day4, day5::Day5, day6::Day6, day7::Day7, day8::Day8, day9::Day9,
 };
 
-pub const CURRENT_DAY: i8 = 14;
+pub const CURRENT_DAY: i8 = 15;
 
 pub mod day1;
 pub mod day10;
@@ -13,6 +13,7 @@ pub mod day11;
 pub mod day12;
 pub mod day13;
 pub mod day14;
+pub mod day15;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -52,6 +53,17 @@ pub fn day_builder(day: i8, input_name: &str) -> Box<dyn Day> {
         12 => Box::new(Day12::new(get_day_input(input_name))) as Box<dyn Day>,
         13 => Box::new(Day13::new(get_day_input(input_name))) as Box<dyn Day>,
         14 => Box::new(Day14::new(get_day_input(input_name))) as Box<dyn Day>,
+        15 => Box::new(Day15::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 16 => Box::new(Day16::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 17 => Box::new(Day17::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 18 => Box::new(Day18::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 19 => Box::new(Day19::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 20 => Box::new(Day20::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 21 => Box::new(Day21::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 22 => Box::new(Day22::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 23 => Box::new(Day23::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 24 => Box::new(Day24::new(get_day_input(input_name))) as Box<dyn Day>,
+        // 25 => Box::new(Day25::new(get_day_input(input_name))) as Box<dyn Day>,
         _ => panic!("Day {} not implemented yet", day),
     }
 }
