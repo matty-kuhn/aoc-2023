@@ -153,7 +153,7 @@ impl Day17 {
             .filter(|s| s.0.count <= max_path)
             .filter(|s| {
                 // if it is the same, need the right count, if it is different, don't need it
-                (s.0.delta == point.delta && s.0.count >= min_path) || s.0.delta != point.delta
+                s.0.delta != point.delta || s.0.count >= min_path
             })
             .filter(|s| !(s.0.pos.x == goal.0 && s.0.pos.y == goal.1 && s.0.count < min_path))
             .map(|x| x.to_owned())
