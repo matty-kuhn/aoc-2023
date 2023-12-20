@@ -186,13 +186,9 @@ impl Day16 {
                         ) {
                             queue.push_back((Direction::Down, next_square));
                         }
-                    } else if let Some(next_square) = Self::get_next_square(
-                        x,
-                        y,
-                        Direction::Up,
-                        map[0].len() - 1,
-                        map.len() - 1,
-                    ) {
+                    } else if let Some(next_square) =
+                        Self::get_next_square(x, y, Direction::Up, map[0].len() - 1, map.len() - 1)
+                    {
                         queue.push_back((Direction::Up, next_square));
                     }
                 }
