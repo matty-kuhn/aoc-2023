@@ -1,11 +1,6 @@
-use std::{
-    collections::{HashMap, HashSet},
-    str::FromStr,
-};
+use std::str::FromStr;
 
 use super::{get_lines, Day};
-
-type Map = Vec<Trench>;
 
 pub struct Day18 {
     input: String,
@@ -46,7 +41,6 @@ impl Day18 {
                 start_y,
                 end_x: x,
                 end_y: y,
-                color: step.color,
             });
             if x < min_x {
                 min_x = x;
@@ -135,8 +129,6 @@ struct Trench {
     start_y: isize,
     end_x: isize,
     end_y: isize,
-    /// rgb colorcode: #ffffff
-    color: String,
 }
 
 #[derive(Clone, Debug)]
@@ -184,7 +176,7 @@ impl FromStr for Step {
             .to_string();
         Ok(Self {
             direction,
-            length: length,
+            length,
             color,
         })
     }
