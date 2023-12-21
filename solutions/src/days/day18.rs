@@ -56,8 +56,8 @@ impl Day18 {
             trench.start_y -= min_y;
             trench.end_y -= min_y;
             let insert = (
-                (trench.start_x as isize, trench.start_y as isize),
-                (trench.end_x as isize, trench.end_y as isize),
+                (trench.start_x, trench.start_y),
+                (trench.end_x, trench.end_y),
             );
             if !matricies.contains(&insert) {
                 matricies.push(insert);
@@ -172,7 +172,7 @@ impl FromStr for Step {
             .unwrap()
             .to_string()
             .trim_start_matches('(')
-            .trim_end_matches(")")
+            .trim_end_matches(')')
             .to_string();
         Ok(Self {
             direction,
