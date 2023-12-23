@@ -4,7 +4,6 @@ use std::{
     str::FromStr,
     sync::{Arc, Mutex},
 };
-use threadpool::ThreadPool;
 
 use super::Day;
 
@@ -96,32 +95,34 @@ impl Day for Day19 {
         // println!("part 1 took: {:?}", start_time.elapsed());
         // format!("{sum}")
         let (parts, workflows) = self.parse_input();
-        let ranges = vec![
-            CriteriaRange::X((1, 4000)),
-            CriteriaRange::M((1, 4000)),
-            CriteriaRange::A((1, 4000)),
-            CriteriaRange::S((1, 4000)),
-        ];
+        let mut ranges = vec![RangeGroup {
+            x: (1, 4000),
+            m: (1, 4000),
+            a: (1, 4000),
+            s: (1, 4000),
+        }];
+        let mut accept_sum = 0;
         for range in ranges {
-            let mut action = workflows.get("in").unwrap().apply_to_range(&range);
-            todo!()
+            let mut actions = workflows.get("in").unwrap().apply_to_range(&range);
 
-            // loop {
-            //     match action {
-            //         Action::Accept => {
-            //             accept_sum += part.sum();
-            //             accepts.push(part);
-            //             break;
-            //         }
-            //         Action::Reject => break,
-            //         Action::Workflow(key) => {
-            //             action = workflows.get(&key).unwrap().apply(&part);
-            //         }
-            //     }
-            // }
+            loop {
+                while let Some((action, range)) = actions.iter_mut().next() {
+                    match action {
+                        Action::Accept => {
+                            // let count = range.count();
+                            // dbg!(accept_sum, count);
+                            accept_sum += range.count();
+                            break;
+                        }
+                        Action::Reject => break,
+                        Action::Workflow(key) => {
+                            actions = workflows.get(key).unwrap().apply_to_range(&range);
+                        }
+                    }
+                }
+            }
         }
-
-        format!("todo")
+        format!("{accept_sum}")
     }
 }
 
@@ -193,182 +194,243 @@ impl Filter {
     /// returns a tuple of an action to apply to a new range, and a range of unused numbers
     fn apply_to_range(
         &self,
-        check: CriteriaRange,
-    ) -> (Option<(Action, CriteriaRange)>, Vec<CriteriaRange>) {
+        check: RangeGroup,
+    ) -> (Option<(Action, RangeGroup)>, Option<RangeGroup>) {
         match self {
             Filter::GreaterThan { cutoff, action } => match cutoff {
-                Criteria::X(v) => match check {
-                    CriteriaRange::X((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::X((start, end)))),
-                                vec![],
-                            )
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (None, vec![CriteriaRange::X((start, end))])
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::X((*v + 1, end)))),
-                                vec![CriteriaRange::X((start, *v - 1))],
-                            )
-                        }
+                Criteria::X(v) => {
+                    let (x_range_start, x_range_end) = check.x;
+                    if x_range_start > *v {
+                        // whole range is above cutoff
+                        (Some((action.clone(), check)), None)
+                    } else if x_range_end < *v {
+                        // whole range is below cutoff
+                        (None, Some(check))
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: (*v + 1, x_range_end),
+                                    m: check.m,
+                                    a: check.a,
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: (x_range_start, *v),
+                                m: check.m,
+                                a: check.a,
+                                s: check.a,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::M(v) => match check {
-                    CriteriaRange::M((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::M((start, end)))),
-                                vec![],
-                            )
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (None, vec![CriteriaRange::M((start, end))])
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::M((*v + 1, end)))),
-                                vec![CriteriaRange::M((start, *v - 1))],
-                            )
-                        }
+                }
+                Criteria::M(v) => {
+                    let (m_range_start, m_range_end) = check.m;
+                    if m_range_start > *v {
+                        // whole range is above cutoff
+                        (Some((action.clone(), check)), None)
+                    } else if m_range_end < *v {
+                        // whole range is below cutoff
+                        (None, Some(check))
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    m: (*v + 1, m_range_end),
+                                    x: check.x,
+                                    a: check.a,
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: (m_range_start, *v),
+                                a: check.a,
+                                s: check.s,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::A(v) => match check {
-                    CriteriaRange::A((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::A((start, end)))),
-                                vec![],
-                            )
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (None, vec![CriteriaRange::A((start, end))])
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::A((*v + 1, end)))),
-                                vec![CriteriaRange::A((start, *v - 1))],
-                            )
-                        }
+                }
+                Criteria::A(v) => {
+                    let (a_range_start, a_range_end) = check.a;
+                    if a_range_start > *v {
+                        // whole range above cutoff
+                        (Some((action.clone(), check)), None)
+                    } else if a_range_end < *v {
+                        // whole range below cutoff
+                        (None, Some(check))
+                    } else {
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: check.x,
+                                    m: check.m,
+                                    a: (*v + 1, a_range_end),
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: check.m,
+                                a: (a_range_start, *v),
+                                s: check.s,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::S(v) => match check {
-                    CriteriaRange::S((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::S((start, end)))),
-                                vec![],
-                            )
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (None, vec![CriteriaRange::S((start, end))])
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::S((*v + 1, end)))),
-                                vec![CriteriaRange::S((start, *v - 1))],
-                            )
-                        }
+                }
+                Criteria::S(v) => {
+                    let (s_range_start, s_range_end) = check.s;
+                    if s_range_start > *v {
+                        (Some((action.clone(), check)), None)
+                    } else if s_range_end < *v {
+                        (None, Some(check))
+                    } else {
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: check.x,
+                                    m: check.m,
+                                    a: check.a,
+                                    s: (*v + 1, s_range_end),
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: check.m,
+                                a: check.a,
+                                s: (s_range_start, *v),
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
+                }
             },
             Filter::LessThan { cutoff, action } => match cutoff {
-                Criteria::X(v) => match check {
-                    CriteriaRange::X((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (None, vec![CriteriaRange::X((start, end))])
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::X((start, end)))),
-                                vec![],
-                            )
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::X((start, *v - 1)))),
-                                vec![CriteriaRange::X((*v + 1, end))],
-                            )
-                        }
+                Criteria::X(v) => {
+                    let (x_range_start, x_range_end) = check.x;
+                    if x_range_start > *v {
+                        // whole range is above cutoff
+                        (None, Some(check))
+                    } else if x_range_end < *v {
+                        // whole range is below cutoff
+                        (Some((action.clone(), check)), None)
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: (x_range_start, *v - 1),
+                                    m: check.m,
+                                    a: check.a,
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: (*v, x_range_end),
+                                m: check.m,
+                                a: check.a,
+                                s: check.s,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::M(v) => match check {
-                    CriteriaRange::M((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (None, vec![CriteriaRange::M((start, end))])
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::M((start, end)))),
-                                vec![],
-                            )
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::M((start, *v - 1)))),
-                                vec![CriteriaRange::M((*v + 1, end))],
-                            )
-                        }
+                }
+                Criteria::M(v) => {
+                    let (m_range_start, m_range_end) = check.m;
+                    if m_range_start > *v {
+                        // whole range is above cutoff
+                        (None, Some(check))
+                    } else if m_range_end < *v {
+                        // whole range is below cutoff
+                        (Some((action.clone(), check)), None)
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: check.x,
+                                    m: (m_range_start, *v - 1),
+                                    a: check.a,
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: (*v, m_range_end),
+                                a: check.a,
+                                s: check.s,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::A(v) => match check {
-                    CriteriaRange::A((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (None, vec![CriteriaRange::A((start, end))])
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::A((start, end)))),
-                                vec![],
-                            )
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::A((start, *v - 1)))),
-                                vec![CriteriaRange::A((*v + 1, end))],
-                            )
-                        }
+                }
+                Criteria::A(v) => {
+                    let (a_range_start, a_range_end) = check.a;
+                    if a_range_start > *v {
+                        // whole range is above cutoff
+                        (None, Some(check))
+                    } else if a_range_end < *v {
+                        // whole range is below cutoff
+                        (Some((action.clone(), check)), None)
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: check.x,
+                                    m: check.m,
+                                    a: (a_range_start, *v - 1),
+                                    s: check.s,
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: check.m,
+                                a: (*v, a_range_end),
+                                s: check.s,
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
-                Criteria::S(v) => match check {
-                    CriteriaRange::S((start, end)) => {
-                        if start > *v {
-                            // whole range is above cutoff
-                            (None, vec![CriteriaRange::S((start, end))])
-                        } else if end < *v {
-                            // whole range is below cutoff
-                            (
-                                Some((action.clone(), CriteriaRange::S((start, end)))),
-                                vec![],
-                            )
-                        } else {
-                            // need new range
-                            (
-                                Some((action.clone(), CriteriaRange::S((start, *v - 1)))),
-                                vec![CriteriaRange::S((*v + 1, end))],
-                            )
-                        }
+                }
+                Criteria::S(v) => {
+                    let (s_range_start, s_range_end) = check.s;
+                    if s_range_start > *v {
+                        // whole range is above cutoff
+                        (None, Some(check))
+                    } else if s_range_end < *v {
+                        // whole range is below cutoff
+                        (Some((action.clone(), check)), None)
+                    } else {
+                        // new range time
+                        (
+                            Some((
+                                action.clone(),
+                                RangeGroup {
+                                    x: check.x,
+                                    m: check.m,
+                                    a: check.a,
+                                    s: (s_range_start, *v - 1),
+                                },
+                            )),
+                            Some(RangeGroup {
+                                x: check.x,
+                                m: check.m,
+                                a: check.a,
+                                s: (*v, s_range_end),
+                            }),
+                        )
                     }
-                    _ => (None, vec![check]),
-                },
+                }
+                _ => todo!(),
             },
-            Filter::Bare(a) => (Some((a.clone(), check)), vec![]),
+            Filter::Bare(a) => (Some((a.clone(), check)), None),
         }
     }
 
@@ -492,17 +554,19 @@ struct Workflow {
 
 impl Workflow {
     /// returns a tuple of an action to apply to a new range, and a range of unused numbers
-    fn apply_to_range(&self, check: &CriteriaRange) -> Vec<(Action, CriteriaRange)> {
+    fn apply_to_range(&self, check: &RangeGroup) -> Vec<(Action, RangeGroup)> {
         let mut range_actions = Vec::new();
         let mut ranges_to_check = vec![check.clone()];
         for filter in &self.filters {
             let mut next_ranges = Vec::new();
             for curr_check in ranges_to_check.clone() {
-                let (action, mut new_ranges) = filter.apply_to_range(curr_check);
+                let (action, new_ranges) = filter.apply_to_range(curr_check);
                 if let Some((action, apply_range)) = action {
                     range_actions.push((action, apply_range));
                 }
-                next_ranges.append(&mut new_ranges);
+                if let Some(new_range) = new_ranges {
+                    next_ranges.push(new_range);
+                };
             }
             ranges_to_check = next_ranges;
         }
@@ -627,11 +691,20 @@ impl FromStr for Criteria {
     }
 }
 
-/// lists of ranges for each criteria, denoted by starts and ends
 #[derive(Debug, Clone)]
-enum CriteriaRange {
-    X((usize, usize)),
-    M((usize, usize)),
-    A((usize, usize)),
-    S((usize, usize)),
+struct RangeGroup {
+    x: (usize, usize),
+    m: (usize, usize),
+    a: (usize, usize),
+    s: (usize, usize),
+}
+
+impl RangeGroup {
+    fn count(&self) -> usize {
+        let x_count = self.x.1 - self.x.0;
+        let m_count = self.m.1 - self.m.0;
+        let a_count = self.a.1 - self.a.0;
+        let s_count = self.s.1 - self.s.0;
+        x_count * m_count * a_count * s_count
+    }
 }
