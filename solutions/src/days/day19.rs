@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap,
+    collections::{HashMap, VecDeque},
     ops::Add,
     str::FromStr,
     sync::{Arc, Mutex},
@@ -94,31 +94,32 @@ impl Day for Day19 {
         // let sum = rx.iter().take(num_runners).fold(0, |acc, x| acc + x);
         // println!("part 1 took: {:?}", start_time.elapsed());
         // format!("{sum}")
-        let (parts, workflows) = self.parse_input();
-        let mut ranges = vec![RangeGroup {
+        let (_, workflows) = self.parse_input();
+        let range = RangeGroup {
             x: (1, 4000),
             m: (1, 4000),
             a: (1, 4000),
             s: (1, 4000),
-        }];
+        };
         let mut accept_sum = 0;
-        for range in ranges {
-            let mut actions = workflows.get("in").unwrap().apply_to_range(&range);
+        let actions = workflows.get("in").unwrap().apply_to_range(&range);
+        let mut actions = VecDeque::from(actions);
 
-            loop {
-                while let Some((action, range)) = actions.iter_mut().next() {
-                    match action {
-                        Action::Accept => {
-                            // let count = range.count();
-                            // dbg!(accept_sum, count);
-                            accept_sum += range.count();
-                            break;
-                        }
-                        Action::Reject => break,
-                        Action::Workflow(key) => {
-                            actions = workflows.get(key).unwrap().apply_to_range(&range);
-                        }
+        while let Some((action, range)) = actions.pop_front() {
+            match action {
+                Action::Accept => {
+                    // let count = range.count();
+                    // dbg!(accept_sum, count);
+                    dbg!(&range);
+                    accept_sum += range.count();
+                }
+                Action::Reject => {}
+                Action::Workflow(key) => {
+                    let mut next_actions = workflows.get(&key).unwrap().apply_to_range(&range);
+                    for next_action in next_actions {
+                        actions.push_back(next_action);
                     }
+                    // panic!()
                 }
             }
         }
