@@ -702,10 +702,11 @@ struct RangeGroup {
 
 impl RangeGroup {
     fn count(&self) -> usize {
-        let x_count = self.x.1 - self.x.0;
-        let m_count = self.m.1 - self.m.0;
-        let a_count = self.a.1 - self.a.0;
-        let s_count = self.s.1 - self.s.0;
+        let x_count = self.x.1 - self.x.0 + 1;
+        let m_count = self.m.1 - self.m.0 + 1;
+        let a_count = self.a.1 - self.a.0 + 1;
+        let s_count = self.s.1 - self.s.0 + 1;
+        dbg!(x_count, m_count, a_count, s_count);
         x_count * m_count * a_count * s_count
     }
 }
